@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: evertec-agibank-tests-playwright-ts
+    environment:
+      - BASE_URL=https://blog.agibank.com.br
+      - HEADLESS=true
+      - CI=true
+    volumes:
+      - ./playwright-report:/app/playwright-report
+      - ./test-results:/app/test-results
+    command: npm run test:all
