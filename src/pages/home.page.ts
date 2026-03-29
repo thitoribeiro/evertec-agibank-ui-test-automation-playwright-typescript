@@ -1,0 +1,53 @@
+import { Page } from '@playwright/test';
+import { BasePage } from './base.page';
+import { SelectorLoader } from '../utils/selector-loader';
+
+/**
+ * Page Object for the Blog do Agi homepage.
+ * Covers hero carousel, search icon and article listing interactions.
+ */
+export class HomePage extends BasePage {
+  constructor(page: Page) {
+    super(page, new SelectorLoader('homepage'));
+  }
+
+  async isLogoVisible(): Promise<boolean> {
+    try {
+      return this.page.locator(this.selectors.get('logo')).first().isVisible();
+    } catch {
+      return false;
+    }
+  }
+
+  async isTitleValid(): Promise<boolean> {
+    const title = (await this.getPageTitle()).toLowerCase();
+    return title.includes('agi') || title.includes('blog');
+  }
+
+  async openSearch(): Promise<void> {
+    await this.page.locator(this.selectors.get('searchIcon')).first().click();
+    await this.page.locator(this.selectors.get('searchInput')).waitFor({ state: 'visible' });
+  }
+
+  async isHeroVisible(): Promise<boolean> {
+    try {
+      const count = await this.page.locator(this.selectors.get('heroArticles')).count();
+      return count > 0;
+    } catch {
+      return false;
+    }
+  }
+
+  async clickHeroReadMore(): Promise<void> {
+    await this.page.locator(this.selectors.get('heroReadMore')).first().click();
+    await this.page.waitForLoadState('networkidle');
+  }
+
+  async getArticleCardsCount(): Promise<number> {
+    return this.page.locator(this.selectors.get('articleCards')).count();
+  }
+
+  async getArticleTitles(): Promise<string[]> {
+    return this.page.locator(this.selectors.get('articleTitles')).allInnerTexts();
+  }
+}
