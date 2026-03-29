@@ -1,0 +1,7 @@
+{
+  "menuItemWrapper": "header ul li:has(> a:has-text('%s')), nav ul li:has(> a:has-text('%s'))",
+  "submenu": "ul.sub-menu, ul.children",
+  "submenuItems": "ul.sub-menu > li > a, ul.children > li > a",
+  "submenuItemLink": "ul.sub-menu a:has-text('%s'), header ul a:has-text('%s')",
+  "categoryArticles": "article.ast-article-post, article.type-post, article"
+}
