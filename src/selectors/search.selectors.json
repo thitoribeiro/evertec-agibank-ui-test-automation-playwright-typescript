@@ -1,0 +1,10 @@
+{
+  "input": "input[name='s']",
+  "inputFallback": "input[placeholder*='Pesquisar' i], input[type='search']",
+  "submitButton": "button:has-text('Pesquisar')",
+  "submitFallback": "input[type='submit'], .search-submit",
+  "resultItems": "article.ast-article-post, article.type-post, article",
+  "resultTitles": "article h3 a, article h2 a, .entry-title a",
+  "noResults": ".nothing-found, .no-results",
+  "noResultsText": "nenhum resultado"
+}
