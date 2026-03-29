@@ -1,0 +1,14 @@
+{
+  "logo": "a[href='https://blog.agibank.com.br/']:has-text('Blog do Agi')",
+  "searchIcon": "a:has-text('Pesquisar')",
+  "searchInput": "input[name='s']",
+  "searchSubmit": "button:has-text('Pesquisar')",
+  "heroArticles": "main h2.entry-title a",
+  "heroReadMore": "a:has-text('Ler mais')",
+  "articleCards": "article.ast-article-post, article.type-post, article",
+  "articleTitles": "article h3 a, article h2 a, .entry-title a",
+  "articleReadMore": "a:has-text('Ler texto'), a:has-text('Ler mais')",
+  "storiesSection": "h2:has-text('Stories')",
+  "storiesItems": "section:has(h2:has-text('Stories')) a",
+  "storiesSeeMore": "a:has-text('Ver mais')"
+}

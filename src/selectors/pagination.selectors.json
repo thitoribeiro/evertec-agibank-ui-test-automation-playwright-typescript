@@ -1,0 +1,8 @@
+{
+  "container": ".page-numbers, .pagination, nav.navigation",
+  "nextButton": "a:has-text('Próxima »'), a.next",
+  "prevButton": "a:has-text('« Anterior'), a.prev",
+  "currentPage": "span.current, .page-numbers.current",
+  "pageNumberLink": ".page-numbers a:has-text('%s'), .pagination a:has-text('%s')",
+  "articleTitles": "article h3, article h2, .entry-title"
+}
