@@ -1,0 +1,27 @@
+{
+  "name": "evertec-agibank-ui-test-automation-playwright-typescript",
+  "version": "1.0.0",
+  "description": "UI test automation for Blog do Agi - Playwright + TypeScript + multi-browser + Docker",
+  "scripts": {
+    "test": "playwright test",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "test:all": "playwright test --project=chromium --project=firefox --project=webkit",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write src"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.42.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0",
+    "eslint": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "prettier": "^3.2.0"
+  }
+}
