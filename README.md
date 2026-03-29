@@ -1,0 +1,1 @@
+# evertec-agibank-ui-test-automation-playwright-typescript
