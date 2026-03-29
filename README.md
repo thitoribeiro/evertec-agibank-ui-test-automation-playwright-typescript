@@ -1,1 +1,1 @@
-# evertec-agibank-ui-test-automation-playwright-typescript
+# Evertec Agibank — UI Test Automation (Playwright + TypeScript)
