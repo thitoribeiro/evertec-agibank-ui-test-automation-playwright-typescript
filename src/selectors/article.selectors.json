@@ -1,0 +1,10 @@
+{
+  "title": "h1",
+  "author": ".entry-meta, p:has-text('Por '), [class*='author']",
+  "date": ".entry-meta, p:has-text('|'), time",
+  "breadcrumb": "p:has(a[href*='blog.agibank.com.br'])",
+  "breadcrumbItems": "p:has(a[href*='blog.agibank.com.br']) a",
+  "breadcrumbHome": "p:has(a[href*='blog.agibank.com.br']) a:first-child",
+  "featuredImage": ".entry-content img:first-child, article img:first-of-type",
+  "content": ".entry-content, article .entry-content"
+}
