@@ -42,7 +42,7 @@ test.describe('Paginação de artigos', () => {
     expect(await paginationPage.isPreviousButtonVisible()).toBe(true);
     const titlesPage2 = await paginationPage.getArticleTitles();
     await page.goBack();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     const titlesPage1 = await paginationPage.getArticleTitles();
     expect(titlesPage1).not.toEqual(titlesPage2);
   });

@@ -48,12 +48,17 @@ export class HomePage extends BasePage {
   }
 
   async clickHeroReadMore(): Promise<void> {
-    // force:true required — UAGB block buttons resolve but may report as not-visible.
-    // waitForURL ensures the navigation actually completed before the test asserts the URL.
-    await Promise.all([
-      this.page.waitForURL(/blog\.agibank\.com\.br\/.+/, { timeout: 15_000 }),
-      this.page.locator(this.selectors.get('heroReadMore')).first().click({ force: true }),
-    ]);
+    // UAGB block link: extract href and navigate directly.
+    // force-click is unreliable on Firefox/WebKit for CSS-hidden elements.
+    const link = this.page.locator(this.selectors.get('heroReadMore')).first();
+    const href = await link.getAttribute('href');
+    if (href) {
+      await this.page.goto(href);
+      await this.page.waitForLoadState('domcontentloaded');
+    } else {
+      await link.click({ force: true });
+      await this.page.waitForLoadState('domcontentloaded');
+    }
   }
 
   async getArticleCardsCount(): Promise<number> {

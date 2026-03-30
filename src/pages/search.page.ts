@@ -33,19 +33,22 @@ export class SearchPage extends BasePage {
 
   async hasResults(): Promise<boolean> {
     try {
-      // Short-circuit: if no-results markers are already present, there are no results
-      if (await this.isNoResultsMessageVisible()) return false;
-      await this.page.locator(this.selectors.get('resultItems'))
+      // resultTitles targets linked article titles — absent on WordPress no-results pages.
+      // This is more reliable than counting generic article wrappers that also appear on no-results.
+      await this.page.locator(this.selectors.get('resultTitles'))
         .first()
-        .waitFor({ state: 'visible', timeout: 5_000 });
-      return (await this.page.locator(this.selectors.get('resultItems')).count()) > 0;
+        .waitFor({ state: 'attached', timeout: 5_000 });
+      const titles = await this.getResultTitles();
+      return titles.filter((t) => t.trim().length > 0).length > 0;
     } catch {
       return false;
     }
   }
 
   async getResultsCount(): Promise<number> {
-    return this.page.locator(this.selectors.get('resultItems')).count();
+    // Count non-empty titles to avoid inflated counts from icon-only or wrapper elements
+    const titles = await this.getResultTitles();
+    return titles.filter((t) => t.trim().length > 0).length;
   }
 
   async getResultTitles(): Promise<string[]> {
