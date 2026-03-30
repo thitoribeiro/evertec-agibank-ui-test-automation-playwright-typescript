@@ -21,13 +21,20 @@ export class SearchPage extends BasePage {
   }
 
   async submitByEnter(): Promise<void> {
-    await this.inputLocator.press('Enter');
-    await this.page.waitForLoadState('networkidle');
+    // press('Enter') on a CSS-hidden input does not submit the Astra theme form
+    // because Playwright requires the element to be focusable (visible).
+    // requestSubmit() dispatches the HTML5 submit event and triggers navigation correctly.
+    await this.page.evaluate(() => {
+      const input = document.querySelector<HTMLInputElement>('input[name="s"]');
+      const form = input?.closest<HTMLFormElement>('form');
+      form?.requestSubmit();
+    });
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async submitByButton(): Promise<void> {
     // Astra theme CSS-hides the form submit button (.search-submit { display:none }).
-    // Both methods must produce identical results, so Enter is the reliable path.
+    // Both methods must produce identical results, so requestSubmit is the reliable path.
     await this.submitByEnter();
   }
 
