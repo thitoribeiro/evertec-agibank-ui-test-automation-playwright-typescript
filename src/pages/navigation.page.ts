@@ -19,6 +19,8 @@ export class NavigationPage extends BasePage {
 
   async isSubmenuVisible(parentText: string): Promise<boolean> {
     try {
+      // Wait for CSS dropdown animation to complete before checking visibility
+      await this.page.waitForTimeout(300);
       const parent = this.page
         .locator(this.selectors.getWith('menuItemWrapper', parentText))
         .first();
