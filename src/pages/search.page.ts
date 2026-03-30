@@ -41,6 +41,8 @@ export class SearchPage extends BasePage {
 
   async hasResults(): Promise<boolean> {
     try {
+      // Short-circuit: if no-results markers are already present, there are no results
+      if (await this.isNoResultsMessageVisible()) return false;
       await this.page.locator(this.selectors.get('resultItems'))
         .first()
         .waitFor({ state: 'visible', timeout: 5_000 });

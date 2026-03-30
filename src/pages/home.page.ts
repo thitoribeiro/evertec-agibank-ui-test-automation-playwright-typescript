@@ -48,8 +48,8 @@ export class HomePage extends BasePage {
   }
 
   async clickHeroReadMore(): Promise<void> {
-    await this.page.locator(this.selectors.get('heroReadMore')).first().click();
-    // domcontentloaded avoids timeout on pages with heavy tracking/ad scripts
+    // force:true required — UAGB block buttons resolve but may report not-visible
+    await this.page.locator(this.selectors.get('heroReadMore')).first().click({ force: true });
     await this.page.waitForLoadState('domcontentloaded');
   }
 
