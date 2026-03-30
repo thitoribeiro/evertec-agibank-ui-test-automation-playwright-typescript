@@ -42,7 +42,14 @@ export class PaginationPage extends BasePage {
 
   async clickPageNumber(n: number): Promise<void> {
     const selector = this.selectors.getWith('pageNumberLink', String(n));
-    await this.page.locator(selector).first().click();
+    const locator = this.page.locator(selector).first();
+    if (await locator.isVisible()) {
+      await locator.click();
+    } else {
+      // Fallback: navigate directly when the page number is not in the visible pagination strip
+      const baseUrl = process.env.BASE_URL ?? 'https://blog.agibank.com.br';
+      await this.page.goto(`${baseUrl}/page/${n}/`);
+    }
     await this.page.waitForLoadState('networkidle');
   }
 
