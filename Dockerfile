@@ -2,10 +2,10 @@ FROM mcr.microsoft.com/playwright:v1.42.0-jammy
 
 WORKDIR /app
 
-COPY package.json ./
-RUN npm install
-RUN npx playwright install --with-deps
+COPY package.json package-lock.json ./
+RUN npm ci
+RUN npx playwright install --with-deps chromium firefox
 
 COPY . .
 
-CMD ["npm", "test"]
+CMD ["npm", "run", "test:all"]

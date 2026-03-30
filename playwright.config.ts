@@ -19,7 +19,8 @@ export default defineConfig({
     viewport: { width: 1280, height: 720 },
     ignoreHTTPSErrors: true,
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    // RECORD_VIDEO=all → record every test (used in Docker for post-run visual review)
+    video: process.env.RECORD_VIDEO === 'all' ? 'on' : 'retain-on-failure',
     trace: 'retain-on-failure',
     actionTimeout: 30_000,
     navigationTimeout: 30_000,

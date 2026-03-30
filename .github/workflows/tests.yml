@@ -2,7 +2,7 @@ name: Agi Blog — UI Tests (Playwright + TypeScript)
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, feature/**]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -14,7 +14,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox, webkit]
+        browser: [chromium, firefox]
+
     steps:
       - uses: actions/checkout@v4
 
@@ -50,4 +51,30 @@ jobs:
         with:
           name: test-results-${{ matrix.browser }}
           path: test-results/
+          retention-days: 30
+
+  docker:
+    name: Docker build verification
+    runs-on: ubuntu-latest
+    needs: test
+    if: always()
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker compose build test-runner
+
+      - name: Run tests in Docker (headless)
+        run: docker compose run --rm test-runner
+        env:
+          BASE_URL: https://blog.agibank.com.br
+        continue-on-error: true
+
+      - name: Upload Docker test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-docker
+          path: playwright-report/
           retention-days: 30

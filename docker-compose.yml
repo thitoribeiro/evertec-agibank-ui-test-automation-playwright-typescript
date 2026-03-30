@@ -1,15 +1,17 @@
 version: "3.8"
+
 services:
+  # CI/CD mode — headless, records video for every test for post-run visual review
   test-runner:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: evertec-agibank-tests-playwright-ts
+    container_name: evertec-agibank-tests
     environment:
       - BASE_URL=https://blog.agibank.com.br
       - HEADLESS=true
       - CI=true
+      - RECORD_VIDEO=all
     volumes:
       - ./playwright-report:/app/playwright-report
       - ./test-results:/app/test-results
-    command: npm run test:all
