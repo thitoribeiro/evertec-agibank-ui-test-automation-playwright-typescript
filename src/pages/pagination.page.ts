@@ -37,7 +37,8 @@ export class PaginationPage extends BasePage {
 
   async clickNext(): Promise<void> {
     await this.page.locator(this.selectors.get('nextButton')).first().click();
-    await this.page.waitForLoadState('networkidle');
+    // domcontentloaded avoids timeout on Firefox caused by ad/tracking requests never settling
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async clickPageNumber(n: number): Promise<void> {
@@ -50,7 +51,7 @@ export class PaginationPage extends BasePage {
       const baseUrl = process.env.BASE_URL ?? 'https://blog.agibank.com.br';
       await this.page.goto(`${baseUrl}/page/${n}/`);
     }
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async getCurrentPageNumber(): Promise<string> {

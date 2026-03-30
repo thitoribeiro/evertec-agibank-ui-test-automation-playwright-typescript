@@ -48,9 +48,12 @@ export class HomePage extends BasePage {
   }
 
   async clickHeroReadMore(): Promise<void> {
-    // force:true required — UAGB block buttons resolve but may report not-visible
-    await this.page.locator(this.selectors.get('heroReadMore')).first().click({ force: true });
-    await this.page.waitForLoadState('domcontentloaded');
+    // force:true required — UAGB block buttons resolve but may report as not-visible.
+    // waitForURL ensures the navigation actually completed before the test asserts the URL.
+    await Promise.all([
+      this.page.waitForURL(/blog\.agibank\.com\.br\/.+/, { timeout: 15_000 }),
+      this.page.locator(this.selectors.get('heroReadMore')).first().click({ force: true }),
+    ]);
   }
 
   async getArticleCardsCount(): Promise<number> {

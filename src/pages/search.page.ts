@@ -26,16 +26,8 @@ export class SearchPage extends BasePage {
   }
 
   async submitByButton(): Promise<void> {
-    try {
-      // Target the submit button scoped to the same form as input[name='s']
-      const form = this.page.locator('form:has(input[name="s"])').first();
-      const btn = form.locator('button[type="submit"], input[type="submit"], .search-submit').first();
-      if (await btn.isVisible()) {
-        await btn.click();
-        await this.page.waitForLoadState('networkidle');
-        return;
-      }
-    } catch { /* fallback to Enter */ }
+    // Astra theme CSS-hides the form submit button (.search-submit { display:none }).
+    // Both methods must produce identical results, so Enter is the reliable path.
     await this.submitByEnter();
   }
 
@@ -70,7 +62,15 @@ export class SearchPage extends BasePage {
     try {
       if ((await this.page.locator(this.selectors.get('noResults')).count()) > 0) return true;
       const content = (await this.page.content()).toLowerCase();
-      return content.includes(this.selectors.get('noResultsText'));
+      // WordPress/Astra PT-BR uses multiple phrases for "no results"
+      const noResultsPhrases = [
+        this.selectors.get('noResultsText'),
+        'nada encontrado',
+        'nothing found',
+        'no results',
+        'não encontramos',
+      ];
+      return noResultsPhrases.some((phrase) => content.includes(phrase));
     } catch {
       return false;
     }
