@@ -21,7 +21,7 @@ export abstract class BasePage {
     const url = `${process.env.BASE_URL ?? 'https://blog.agibank.com.br'}${path}`;
     logger.info(`Navigating to: ${url}`);
     await this.page.goto(url);
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async getCurrentUrl(): Promise<string> {

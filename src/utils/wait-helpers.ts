@@ -32,6 +32,6 @@ export class WaitHelpers {
    * Waits for navigation to complete after an action.
    */
   async afterNavigation(action: () => Promise<void>): Promise<void> {
-    await Promise.all([this.page.waitForLoadState('networkidle'), action()]);
+    await Promise.all([this.page.waitForLoadState('domcontentloaded'), action()]);
   }
 }

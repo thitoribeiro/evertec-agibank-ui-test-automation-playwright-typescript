@@ -3,7 +3,7 @@ import { test, expect } from '../fixtures/base-test';
 test.describe('Paginação de artigos', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('deve avançar para página 2 com artigos diferentes', async ({ paginationPage }) => {

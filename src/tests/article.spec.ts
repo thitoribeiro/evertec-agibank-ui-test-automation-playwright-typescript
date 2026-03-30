@@ -3,7 +3,7 @@ import { test, expect } from '../fixtures/base-test';
 test.describe('Leitura de artigo', () => {
   test.beforeEach(async ({ page, homePage, searchPage }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await homePage.openSearch();
     await searchPage.typeSearchTerm('empréstimo');
     await searchPage.submitByEnter();

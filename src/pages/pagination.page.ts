@@ -36,14 +36,25 @@ export class PaginationPage extends BasePage {
   }
 
   async clickNext(): Promise<void> {
+    // Set up URL listener before clicking to avoid the race condition where
+    // waitForLoadState('domcontentloaded') catches the OLD page before navigation starts.
+    const currentUrl = this.page.url();
+    const navigated = this.page.waitForURL(
+      (url) => url.toString() !== currentUrl,
+      { waitUntil: 'domcontentloaded', timeout: 10_000 },
+    );
     await this.page.locator(this.selectors.get('nextButton')).first().click();
-    // domcontentloaded avoids timeout on Firefox caused by ad/tracking requests never settling
-    await this.page.waitForLoadState('domcontentloaded');
+    await navigated;
   }
 
   async clickPageNumber(n: number): Promise<void> {
     const selector = this.selectors.getWith('pageNumberLink', String(n));
     const locator = this.page.locator(selector).first();
+    const currentUrl = this.page.url();
+    const navigated = this.page.waitForURL(
+      (url) => url.toString() !== currentUrl,
+      { waitUntil: 'domcontentloaded', timeout: 10_000 },
+    );
     if (await locator.isVisible()) {
       await locator.click();
     } else {
@@ -51,7 +62,7 @@ export class PaginationPage extends BasePage {
       const baseUrl = process.env.BASE_URL ?? 'https://blog.agibank.com.br';
       await this.page.goto(`${baseUrl}/page/${n}/`);
     }
-    await this.page.waitForLoadState('domcontentloaded');
+    await navigated;
   }
 
   async getCurrentPageNumber(): Promise<string> {

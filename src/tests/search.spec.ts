@@ -3,7 +3,7 @@ import { test, expect } from '../fixtures/base-test';
 test.describe('Busca de artigos', () => {
   test.beforeEach(async ({ page, homePage }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await homePage.openSearch();
   });
 
@@ -38,7 +38,7 @@ test.describe('Busca de artigos', () => {
     const countViaEnter = await searchPage.getResultsCount();
 
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await homePage.openSearch();
     await searchPage.typeSearchTerm('financiamento');
     await searchPage.submitByButton();

@@ -7,6 +7,11 @@ import { SelectorLoader } from '../utils/selector-loader';
  * Covers input interaction, result validation and empty state.
  */
 export class SearchPage extends BasePage {
+  // Stores the last typed term so submitByEnter can set it via evaluate()
+  // before calling requestSubmit() — fill({force:true}) on CSS-hidden inputs
+  // does not persist through form submission in Astra's DOM.
+  private _pendingTerm = '';
+
   constructor(page: Page) {
     super(page, new SelectorLoader('search'));
   }
@@ -16,32 +21,51 @@ export class SearchPage extends BasePage {
   }
 
   async typeSearchTerm(term: string): Promise<void> {
+    this._pendingTerm = term;
     // force:true bypasses Astra's CSS-hidden input while the toggle animation settles
     await this.inputLocator.fill(term, { force: true });
   }
 
   async submitByEnter(): Promise<void> {
-    // press('Enter') on a CSS-hidden input does not submit the Astra theme form
-    // because Playwright requires the element to be focusable (visible).
-    // requestSubmit() dispatches the HTML5 submit event and triggers navigation correctly.
-    await this.page.evaluate(() => {
+    // Astra's CSS-hidden input loses fill() value before form.requestSubmit() fires.
+    // Use the native HTMLInputElement value setter inside evaluate() to guarantee
+    // the term is present in the input at the moment of submission.
+    const term = this._pendingTerm;
+    const currentUrl = this.page.url();
+    const navigated = this.page.waitForURL(
+      (url) => url.toString() !== currentUrl,
+      { waitUntil: 'domcontentloaded', timeout: 10_000 },
+    );
+    await this.page.evaluate((searchTerm) => {
       const input = document.querySelector<HTMLInputElement>('input[name="s"]');
-      const form = input?.closest<HTMLFormElement>('form');
-      form?.requestSubmit();
-    });
-    await this.page.waitForLoadState('domcontentloaded');
+      if (input) {
+        const nativeSetter = Object.getOwnPropertyDescriptor(
+          HTMLInputElement.prototype, 'value',
+        )?.set;
+        nativeSetter?.call(input, searchTerm);
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        const form = input.closest<HTMLFormElement>('form');
+        form?.requestSubmit();
+      }
+    }, term);
+    await navigated;
   }
 
   async submitByButton(): Promise<void> {
     // Astra theme CSS-hides the form submit button (.search-submit { display:none }).
-    // Both methods must produce identical results, so requestSubmit is the reliable path.
+    // Both methods must produce identical results via the same submission path.
     await this.submitByEnter();
   }
 
   async hasResults(): Promise<boolean> {
+    // The .no-results marker is the authoritative signal — return false immediately.
+    // A JavaScript plugin may inject "suggested articles" into #primary even on no-results
+    // pages, so checking resultTitles alone is not sufficient.
+    if ((await this.page.locator(this.selectors.get('noResults')).count()) > 0) {
+      return false;
+    }
     try {
       // resultTitles targets linked article titles — absent on WordPress no-results pages.
-      // This is more reliable than counting generic article wrappers that also appear on no-results.
       await this.page.locator(this.selectors.get('resultTitles'))
         .first()
         .waitFor({ state: 'attached', timeout: 5_000 });
@@ -100,7 +124,7 @@ export class SearchPage extends BasePage {
     const firstLink = this.page.locator(this.selectors.get('resultTitles')).first();
     const href = (await firstLink.getAttribute('href')) ?? '';
     await firstLink.click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
     return href;
   }
 }

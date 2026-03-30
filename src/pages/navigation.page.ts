@@ -36,9 +36,11 @@ export class NavigationPage extends BasePage {
   }
 
   async clickSubmenuItem(itemText: string): Promise<void> {
+    // In WebKit, `:hover` state is lost before Playwright checks visibility for click.
+    // force:true bypasses the visibility check so the element is clicked regardless.
     const selector = this.selectors.getWith('submenuItemLink', itemText);
-    await this.page.locator(selector).first().click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.locator(selector).first().click({ force: true });
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async categoryPageHasArticles(): Promise<boolean> {

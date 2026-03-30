@@ -4,7 +4,7 @@
   "submitButton": "button:has-text('Pesquisar')",
   "submitFallback": "input[type='submit'], .search-submit",
   "resultItems": "article.ast-article-post, article.type-post, article",
-  "resultTitles": "article h3 a, article h2 a, .entry-title a",
+  "resultTitles": "#primary article h3 a, #primary article h2 a, #primary .entry-title a",
   "noResults": ".nothing-found, .no-results",
   "noResultsText": "nenhum resultado"
 }
