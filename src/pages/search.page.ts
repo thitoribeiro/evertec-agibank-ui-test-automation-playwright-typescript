@@ -16,7 +16,8 @@ export class SearchPage extends BasePage {
   }
 
   async typeSearchTerm(term: string): Promise<void> {
-    await this.inputLocator.fill(term);
+    // force:true bypasses Astra's CSS-hidden input while the toggle animation settles
+    await this.inputLocator.fill(term, { force: true });
   }
 
   async submitByEnter(): Promise<void> {
