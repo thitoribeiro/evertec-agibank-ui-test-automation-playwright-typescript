@@ -27,7 +27,9 @@ export class SearchPage extends BasePage {
 
   async submitByButton(): Promise<void> {
     try {
-      const btn = this.page.locator(this.selectors.get('submitButton')).first();
+      // Target the submit button scoped to the same form as input[name='s']
+      const form = this.page.locator('form:has(input[name="s"])').first();
+      const btn = form.locator('button[type="submit"], input[type="submit"], .search-submit').first();
       if (await btn.isVisible()) {
         await btn.click();
         await this.page.waitForLoadState('networkidle');
@@ -58,7 +60,8 @@ export class SearchPage extends BasePage {
 
   async getFirstResultTitle(): Promise<string> {
     const titles = await this.getResultTitles();
-    return titles[0]?.trim() ?? '';
+    // Filter empty strings (icon-only links return empty innerText)
+    return titles.find((t) => t.trim().length > 0)?.trim() ?? '';
   }
 
   async isNoResultsMessageVisible(): Promise<boolean> {
