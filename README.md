@@ -235,6 +235,3 @@ npm run lint
 npm run format
 ```
 
----
-
-Desenvolvido por **Thito Ribeiro**
