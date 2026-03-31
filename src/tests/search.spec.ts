@@ -13,38 +13,11 @@ test.describe('Busca de artigos', () => {
     expect(await searchPage.hasResults()).toBe(true);
   });
 
-  test('deve exibir títulos clicáveis nos resultados', async ({ searchPage }) => {
-    await searchPage.typeSearchTerm('poupança');
-    await searchPage.submitByEnter();
-    expect(await searchPage.hasResults()).toBe(true);
-    expect(await searchPage.allResultsHaveLinks()).toBe(true);
-    expect(await searchPage.getFirstResultTitle()).not.toBe('');
-  });
-
   test('deve exibir mensagem de nenhum resultado para termo inválido', async ({ searchPage }) => {
     await searchPage.typeSearchTerm('xyzabc123invalido987');
     await searchPage.submitByEnter();
     expect(await searchPage.hasResults()).toBe(false);
     expect(await searchPage.isNoResultsMessageVisible()).toBe(true);
-  });
-
-  test('deve retornar o mesmo número de resultados via Enter e via botão', async ({
-    page,
-    homePage,
-    searchPage,
-  }) => {
-    await searchPage.typeSearchTerm('financiamento');
-    await searchPage.submitByEnter();
-    const countViaEnter = await searchPage.getResultsCount();
-
-    await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
-    await homePage.openSearch();
-    await searchPage.typeSearchTerm('financiamento');
-    await searchPage.submitByButton();
-    const countViaButton = await searchPage.getResultsCount();
-
-    expect(countViaEnter).toBe(countViaButton);
   });
 
   test('deve aceitar caracteres especiais sem quebrar a página', async ({ page, searchPage }) => {

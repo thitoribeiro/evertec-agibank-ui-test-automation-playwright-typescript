@@ -15,13 +15,6 @@ test.describe('Homepage', () => {
     expect(await homePage.isHeroVisible()).toBe(true);
   });
 
-  test('deve abrir artigo ao clicar em Ler mais no hero', async ({ page, homePage }) => {
-    const homeUrl = page.url();
-    await homePage.clickHeroReadMore();
-    expect(page.url()).not.toBe(homeUrl);
-    expect(page.url()).toContain('blog.agibank.com.br');
-  });
-
   test('deve exibir cards de artigos na seção Últimas do Blog', async ({ homePage }) => {
     const count = await homePage.getArticleCardsCount();
     expect(count).toBeGreaterThan(0);

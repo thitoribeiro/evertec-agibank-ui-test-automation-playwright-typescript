@@ -4,6 +4,8 @@
   "description": "UI test automation for Blog do Agi - Playwright + TypeScript + multi-browser + Docker",
   "scripts": {
     "test": "playwright test",
+    "test:local": "./run-tests.sh local",
+    "test:docker": "./run-tests.sh docker",
     "test:chromium": "playwright test --project=chromium",
     "test:firefox": "playwright test --project=firefox",
     "test:webkit": "playwright test --project=webkit",
