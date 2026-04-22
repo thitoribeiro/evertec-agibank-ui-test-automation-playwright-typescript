@@ -1,15 +1,6 @@
 name: Agi Blog — UI Tests (Playwright + TypeScript)
 
 on:
-  push:
-    branches: [main, develop, feature/**]
-
-  pull_request:
-    branches: [main]
-
-  schedule:
-    - cron: '0 */6 * * *'
-
   workflow_dispatch:
     inputs:
       suite:
@@ -58,10 +49,10 @@ jobs:
         run: npx playwright install --with-deps firefox
 
       - name: Run tests — all suites
-        if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all'
+        if: inputs.suite == 'all'
         run: npx playwright test --project=firefox
         env:
-          BASE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.base_url || 'https://blog.agibank.com.br' }}
+          BASE_URL: ${{ inputs.base_url }}
           CI: true
 
       - name: Run tests — ${{ inputs.suite }} suite only
@@ -88,13 +79,13 @@ jobs:
           retention-days: 30
 
   # ─────────────────────────────────────────────
-  # Docker — só em push e pull_request
+  # Docker
   # ─────────────────────────────────────────────
   docker:
     name: Docker — build & run
     runs-on: ubuntu-latest
     needs: [test-firefox]
-    if: always() && (github.event_name == 'push' || github.event_name == 'pull_request')
+    if: always()
 
     steps:
       - name: Checkout
